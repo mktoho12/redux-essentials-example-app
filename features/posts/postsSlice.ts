@@ -54,7 +54,9 @@ const postsSlice = createSlice({
 
     postUpdated: (
       state,
-      { payload: { id, title, content } }: PayloadAction<Omit<Post, 'user'>>
+      {
+        payload: { id, title, content },
+      }: PayloadAction<Pick<Post, 'id' | 'title' | 'content'>>
     ) => {
       const post = state.find(post => post.id === id)
       if (!post) return
