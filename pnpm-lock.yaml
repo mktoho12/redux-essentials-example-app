@@ -9,6 +9,7 @@ specifiers:
   '@types/react': 18.0.8
   '@types/react-dom': 18.0.3
   '@types/seedrandom': ^3.0.2
+  '@uiw/react-github-corners': ^1.5.14
   autoprefixer: ^10.4.5
   classnames: ^2.3.1
   date-fns: ^2.28.0
@@ -46,6 +47,7 @@ devDependencies:
   '@types/react': 18.0.8
   '@types/react-dom': 18.0.3
   '@types/seedrandom': 3.0.2
+  '@uiw/react-github-corners': 1.5.14_ef5jwxihqo6n7gxfmzogljlgcm
   autoprefixer: 10.4.5_postcss@8.4.12
   classnames: 2.3.1
   eslint: 8.14.0
@@ -464,6 +466,21 @@ packages:
     dependencies:
       '@typescript-eslint/types': 5.10.1
       eslint-visitor-keys: 3.3.0
+    dev: true
+
+  /@uiw/github-corners/1.5.14:
+    resolution: {integrity: sha512-nVyvyoCjAAbTBmKTm40GQOjx+ZItH5oEIUSuErF1ohuyrdHBEBvoqq8abS1nb/utA7zU71C26OzUh0AG9Sb7mw==}
+    dev: true
+
+  /@uiw/react-github-corners/1.5.14_ef5jwxihqo6n7gxfmzogljlgcm:
+    resolution: {integrity: sha512-lgokV53fSIQDde3598VNPeMJLdArK9L0FF9dM67xyNtcnw9wF+gYcE1LHt53JaiN9ioLtfR5zLZEpi0SwAPjqg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@uiw/github-corners': 1.5.14
+      react: 18.1.0
+      react-dom: 18.1.0_react@18.1.0
     dev: true
 
   /@xmldom/xmldom/0.7.5:
