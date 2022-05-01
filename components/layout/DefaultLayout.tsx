@@ -9,6 +9,7 @@ const DefaultLayout: FC<Props> = ({ children }) => {
   return (
     <>
       <Head>
+        <title>Redux Essentials Example</title>
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>
 
