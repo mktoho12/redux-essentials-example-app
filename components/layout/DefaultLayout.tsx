@@ -1,16 +1,11 @@
 import Head from 'next/head'
 import { FC, PropsWithChildren, useEffect, useState } from 'react'
 import { Navbar } from '../Navbar'
-import GHCorner from 'react-gh-corner'
+import GithubCorner from '../button/GithubCorner'
 
 type Props = PropsWithChildren<{}>
 
 const DefaultLayout: FC<Props> = ({ children }) => {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <>
       <Head>
@@ -36,14 +31,12 @@ const DefaultLayout: FC<Props> = ({ children }) => {
       <Navbar />
       {children}
 
-      {mounted && (
-        <GHCorner
-          position="top-right"
-          href="https://github.com/mktoho12/redux-essentials-example-app"
-          bgColor="black"
-          size={80}
-        />
-      )}
+      <GithubCorner
+        href="https://github.com/mktoho12/redux-essentials-example-app"
+        bgColor="white"
+        color="#764abc"
+        size={100}
+      />
     </>
   )
 }

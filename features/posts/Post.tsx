@@ -1,13 +1,12 @@
 import Error from 'next/error'
-import Link from 'next/link'
 import { FC } from 'react'
 import { useSelector } from 'react-redux'
 import BorderLink from '../../components/button/BorderLink'
-import PrimaryButton from '../../components/button/PrimaryButton'
 import PrimaryLink from '../../components/button/PrimaryLink'
-import { selectUser } from '../users/usersSlice'
 import PostAuthor from './PostAuthor'
 import { selectPost } from './postsSlice'
+import ReactionButtons from './ReactionButtons'
+import TimeAgo from './TimeAgo'
 
 type Props = {
   id: string
@@ -31,9 +30,12 @@ const Post: FC<Props> = ({ id }) => {
             </>
           ))}
       </p>
-      <p className="text-right">
+      <p className="text-right italic">
         <PostAuthor userId={post.user} />
+        <br />
+        <TimeAgo timestamp={post.date} />
       </p>
+      <ReactionButtons post={post} />
       <div className="flex justify-center mt-4 gap-2">
         <PrimaryLink href={`/posts/edit/${id}`}>Edit</PrimaryLink>
         <BorderLink href="/">Back</BorderLink>
