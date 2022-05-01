@@ -11,7 +11,11 @@ const PostPage: NextPage = () => {
 
   if (!id) return <Error statusCode={404} />
 
-  return <Post id={first(id)} />
+  return (
+    <section>
+      <Post id={first(id)} />
+    </section>
+  )
 }
 
 export default PostPage
