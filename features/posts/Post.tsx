@@ -34,7 +34,7 @@ const Post: FC<Props> = ({ id }) => {
       <p className="text-right">
         <PostAuthor userId={post.user} />
       </p>
-      <div className="flex justify-center gap-2">
+      <div className="flex justify-center mt-4 gap-2">
         <PrimaryLink href={`/posts/edit/${id}`}>Edit</PrimaryLink>
         <BorderLink href="/">Back</BorderLink>
       </div>
