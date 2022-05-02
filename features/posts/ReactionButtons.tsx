@@ -1,6 +1,6 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import { useAppDispatch } from '../../app/hooks'
-import { Post, reactionAdded } from './postsSlice'
+import { addReaction, Post } from './postsSlice'
 
 const reactionEmoji = {
   thumbsUp: '👍',
@@ -16,6 +16,18 @@ type Props = {
 
 const ReactionButtons: FC<Props> = ({ post }) => {
   const dispatch = useAppDispatch()
+  const [requestStatus, setRequestStatus] = useState('idle')
+
+  const addReactionToPost = (name: string) => () => {
+    try {
+      setRequestStatus('pending')
+      dispatch(addReaction({ postId: post.id, reaction: name }))
+    } catch (err) {
+      console.error('Failed to add reaction to post: ', err)
+    } finally {
+      setRequestStatus('idle')
+    }
+  }
 
   return (
     <div>
@@ -24,9 +36,7 @@ const ReactionButtons: FC<Props> = ({ post }) => {
           key={name}
           type="button"
           className="muted-button reaction-button"
-          onClick={() =>
-            dispatch(reactionAdded({ postId: post.id, reaction: name }))
-          }
+          onClick={addReactionToPost(name)}
         >
           {emoji} <span className="ml-2">{post.reactions[name]}</span>
         </button>

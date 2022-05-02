@@ -1,11 +1,11 @@
 import classNames from 'classnames'
-import { FC, PropsWithChildren, ReactNode, useId, useState } from 'react'
+import { FC, ReactNode, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import DropdownList from '../../components/input/DropdownList'
 import TextArea from '../../components/input/TextArea'
 import TextField from '../../components/input/TextField'
-import { addNewPost, postAdded } from './postsSlice'
+import { addNewPost } from './postsSlice'
 
 type Props = {
   buttons?: ReactNode

@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import TextArea from '../../components/input/TextArea'
 import TextField from '../../components/input/TextField'
-import { postUpdated, selectPostById } from './postsSlice'
+import { selectPostById, updatePost } from './postsSlice'
 
 type Props = {
   id: string
@@ -21,11 +21,24 @@ const EditPostForm: FC<Props> = ({ id, buttons }) => {
 
   const router = useRouter()
 
+  const [requestStatus, setRequestStatus] = useState('idle')
+  const dispatchUpdatePost = () => {
+    try {
+      setRequestStatus('pending')
+      dispatch(updatePost({ id, title, content }))
+      router.push(`/posts/${id}`)
+    } catch (err) {
+      console.error('Failed to update the post: ', err)
+    } finally {
+      setRequestStatus('idle')
+    }
+  }
+
   useEffect(() => {
     if (!post) return
 
-    setTitle(post?.title)
-    setContent(post?.content)
+    setTitle(post.title)
+    setContent(post.content)
   }, [post])
 
   if (!post) return <Error statusCode={404} />
@@ -50,13 +63,7 @@ const EditPostForm: FC<Props> = ({ id, buttons }) => {
         </fieldset>
 
         <div className="mt-4 flex justify-center gap-4">
-          <PrimaryButton
-            type="button"
-            onClick={() => {
-              dispatch(postUpdated({ id, title, content }))
-              router.push(`/posts/${id}`)
-            }}
-          >
+          <PrimaryButton type="button" onClick={dispatchUpdatePost}>
             Update
           </PrimaryButton>
 

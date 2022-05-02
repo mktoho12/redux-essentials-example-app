@@ -1,15 +1,11 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  nanoid,
-  PayloadAction,
-} from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
 import {
   addDoc,
   collection,
   doc,
   FirestoreDataConverter,
+  getDoc,
   getDocs,
   setDoc,
 } from 'firebase/firestore'
@@ -28,6 +24,8 @@ export type Post = {
 }
 
 type NewPost = Omit<Post, 'id' | 'date' | 'reactions'>
+type EditPost = Pick<Post, 'id' | 'title' | 'content'>
+type NewReaction = { postId: string; reaction: string }
 
 type PostsState = {
   posts: Post[]
@@ -57,7 +55,6 @@ const postConverter: FirestoreDataConverter<Post> = {
 }
 
 export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
-  await new Promise(resolve => setTimeout(resolve, 1000))
   const snapshot = await getDocs(
     collection(db, 'posts').withConverter(postConverter)
   )
@@ -77,50 +74,39 @@ export const addNewPost = createAsyncThunk(
   }
 )
 
+export const addReaction = createAsyncThunk(
+  'posts/addReaction',
+  async ({ postId, reaction }: NewReaction) => {
+    const docRef = doc(db, 'posts', postId).withConverter(postConverter)
+    const docSnap = await getDoc(docRef)
+    if (!docSnap.exists()) {
+      throw `post ${postId} is not found`
+    }
+    const post = docSnap.data()
+    post.reactions[reaction]++
+    await setDoc(docRef, post)
+    return post
+  }
+)
+
+export const updatePost = createAsyncThunk(
+  'posts/updatePost',
+  async ({ id, title, content }: EditPost) => {
+    const docRef = doc(db, 'posts', id).withConverter(postConverter)
+    const docSnap = await getDoc(docRef)
+    if (!docSnap.exists()) {
+      throw `post ${id} is not found`
+    }
+    const post = { ...docSnap.data(), title, content }
+    await setDoc(docRef, post)
+    return post
+  }
+)
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {
-    postAdded: {
-      reducer: ({ posts, status, error }, { payload }: PayloadAction<Post>) => {
-        posts.push(payload)
-      },
-      prepare: (title: string, content: string, user: string) => ({
-        payload: {
-          id: nanoid(),
-          date: new Date().toISOString(),
-          title,
-          content,
-          user,
-          reactions: {},
-        },
-      }),
-    },
-
-    postUpdated: (
-      { posts, status, error },
-      {
-        payload: { id, title, content },
-      }: PayloadAction<Pick<Post, 'id' | 'title' | 'content'>>
-    ) => {
-      const post = posts.find(post => post.id === id)
-      if (!post) return
-      post.title = title
-      post.content = content
-    },
-
-    reactionAdded: (
-      { posts, status, error },
-      {
-        payload: { postId, reaction },
-      }: PayloadAction<{ postId: string; reaction: string }>
-    ) => {
-      const existingPost = posts.find(post => post.id === postId)
-      existingPost &&
-        (existingPost.reactions[reaction] =
-          (existingPost.reactions[reaction] || 0) + 1)
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
@@ -137,18 +123,27 @@ const postsSlice = createSlice({
       .addCase(addNewPost.fulfilled, (state, action) => {
         state.posts.push(action.payload)
       })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        const post = state.posts.find(post => post.id === action.payload.id)
+        if (post) {
+          post.title = action.payload.title
+          post.content = action.payload.content
+        }
+      })
+      .addCase(addReaction.fulfilled, (state, action) => {
+        const post = state.posts.find(post => post.id === action.payload.id)
+        if (post) {
+          post.reactions = action.payload.reactions
+        }
+      })
   },
 })
 
 export default postsSlice.reducer
 
-export const selectAllPosts = ({
-  posts: { posts, status, error },
-}: RootState) => posts
+export const selectAllPosts = ({ posts: { posts } }: RootState) => posts
 
 export const selectPostById =
   (id?: string) =>
-  ({ posts: { posts, status, error } }: RootState) =>
+  ({ posts: { posts } }: RootState) =>
     posts.find(post => post.id === id)
-
-export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions
