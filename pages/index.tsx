@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
 import AddPostForm from '../features/posts/AddPostForm'
 import PostsList from '../features/posts/PostsList'
 
@@ -9,6 +8,7 @@ const Home: NextPage = () => {
       <section>
         <AddPostForm />
       </section>
+
       <PostsList />
     </>
   )

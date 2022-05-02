@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import BorderLink from '../../../components/button/BorderLink'
 import EditPostForm from '../../../features/posts/EditPostForm'
-import firstIfArray from '../../../util/firstIfArray'
+import firstIfArray from '../../../lib/firstIfArray'
 
 const PostEditPage: NextPage = () => {
   const router = useRouter()

@@ -1,10 +1,11 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
-import { Provider } from "react-redux"
-import store from "../app/store"
+import { Provider } from 'react-redux'
+import store from '../app/store'
 import DefaultLayout from '../components/layout/DefaultLayout'
 import { ReactElement, ReactNode } from 'react'
 import { NextPage } from 'next'
+import { fetchUsers } from '../features/users/usersSlice'
 
 export type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -13,6 +14,8 @@ export type NextPageWithLayout = NextPage & {
 export type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
+
+store.dispatch(fetchUsers())
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const getLayout =

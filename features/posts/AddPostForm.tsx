@@ -21,7 +21,7 @@ const AddPostForm: FC<Props> = ({ buttons }) => {
   const users = useAppSelector(state => state.users)
   const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
 
-  const usersOptions = users.map(user => (
+  const usersOptions = users.data.map(user => (
     <option value={user.id} key={user.id}>
       {user.name}
     </option>

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import BorderLink from '../../components/button/BorderLink'
 import PrimaryLink from '../../components/button/PrimaryLink'
 import PostAuthor from './PostAuthor'
-import { selectPost } from './postsSlice'
+import { selectPostById } from './postsSlice'
 import ReactionButtons from './ReactionButtons'
 import TimeAgo from './TimeAgo'
 
@@ -13,7 +13,7 @@ type Props = {
 }
 
 const Post: FC<Props> = ({ id }) => {
-  const post = useSelector(selectPost(id))
+  const post = useSelector(selectPostById(id))
 
   return post ? (
     <section>

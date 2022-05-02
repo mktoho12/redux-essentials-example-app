@@ -9,7 +9,7 @@ type Props = {
   data: Post
 }
 
-const PostSummary: FC<Props> = ({ data: post }) => {
+const PostExcerpt: FC<Props> = ({ data: post }) => {
   return (
     <div className="flex flex-col gap-0">
       <Link href={`/posts/${post.id}`}>
@@ -32,4 +32,4 @@ const PostSummary: FC<Props> = ({ data: post }) => {
   )
 }
 
-export default PostSummary
+export default PostExcerpt

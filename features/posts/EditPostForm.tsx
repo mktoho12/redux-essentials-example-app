@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import TextArea from '../../components/input/TextArea'
 import TextField from '../../components/input/TextField'
-import { postUpdated, selectPost } from './postsSlice'
+import { postUpdated, selectPostById } from './postsSlice'
 
 type Props = {
   id: string
@@ -17,7 +17,7 @@ const EditPostForm: FC<Props> = ({ id, buttons }) => {
   const [content, setContent] = useState('')
 
   const dispatch = useAppDispatch()
-  const post = useAppSelector(selectPost(id))
+  const post = useAppSelector(selectPostById(id))
 
   const router = useRouter()
 
