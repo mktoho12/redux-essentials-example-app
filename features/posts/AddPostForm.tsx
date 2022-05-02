@@ -5,7 +5,7 @@ import PrimaryButton from '../../components/button/PrimaryButton'
 import DropdownList from '../../components/input/DropdownList'
 import TextArea from '../../components/input/TextArea'
 import TextField from '../../components/input/TextField'
-import { postAdded } from './postsSlice'
+import { addNewPost, postAdded } from './postsSlice'
 
 type Props = {
   buttons?: ReactNode
@@ -19,13 +19,32 @@ const AddPostForm: FC<Props> = ({ buttons }) => {
   const dispatch = useAppDispatch()
 
   const users = useAppSelector(state => state.users)
-  const canSave = Boolean(title) && Boolean(content) && Boolean(userId)
+  const [addRequestStatus, setAddRequestStatus] = useState('idle')
+
+  const canSave =
+    [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
 
   const usersOptions = users.data.map(user => (
     <option value={user.id} key={user.id}>
       {user.name}
     </option>
   ))
+
+  const saveNewPost = async () => {
+    if (canSave) {
+      try {
+        setAddRequestStatus('pending')
+        await dispatch(addNewPost({ title, content, user: userId })).unwrap()
+        setTitle('')
+        setContent('')
+        setUserId('')
+      } catch (err) {
+        console.error('Failed to save the post: ', err)
+      } finally {
+        setAddRequestStatus('idle')
+      }
+    }
+  }
 
   return (
     <>
@@ -58,7 +77,7 @@ const AddPostForm: FC<Props> = ({ buttons }) => {
         <div className="mt-4 text-center">
           <PrimaryButton
             type="button"
-            onClick={() => dispatch(postAdded(title, content, userId))}
+            onClick={saveNewPost}
             className={classNames({ 'pointer-events-none': !canSave })}
             disabled={!canSave}
           >

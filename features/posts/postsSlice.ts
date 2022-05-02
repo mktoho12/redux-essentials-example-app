@@ -5,8 +5,16 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
-import { collection, FirestoreDataConverter, getDocs } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  doc,
+  FirestoreDataConverter,
+  getDocs,
+  setDoc,
+} from 'firebase/firestore'
 import { db } from '../../lib/firebase'
+import { formatISO } from 'date-fns'
 
 export type Post = {
   id: string
@@ -18,6 +26,8 @@ export type Post = {
     [key: string]: number
   }
 }
+
+type NewPost = Omit<Post, 'id' | 'date' | 'reactions'>
 
 type PostsState = {
   posts: Post[]
@@ -53,6 +63,19 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   )
   return snapshot.docs.map(doc => doc.data())
 })
+
+export const addNewPost = createAsyncThunk(
+  'posts/addNewPost',
+  async (initialPost: NewPost) => {
+    const newPost = {
+      ...initialPost,
+      date: formatISO(new Date()),
+      reactions: { thumbsUp: 0, hooray: 0, heart: 0, rocket: 0, eyes: 0 },
+    }
+    const docRef = await addDoc(collection(db, 'posts'), newPost)
+    return { ...newPost, id: docRef.id }
+  }
+)
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -110,6 +133,9 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        state.posts.push(action.payload)
       })
   },
 })
