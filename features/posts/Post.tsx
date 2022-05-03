@@ -1,5 +1,4 @@
-import Error from 'next/error'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import BorderLink from '../../components/button/BorderLink'
 import PrimaryLink from '../../components/button/PrimaryLink'
@@ -16,7 +15,7 @@ const Post: FC<Props> = ({ id }) => {
   const post = useSelector(selectPostById(id))
 
   return post ? (
-    <section>
+    <div>
       <h2 className="text-2xl mt-4">{post.title}</h2>
       <p className="mt-4 min-h-[6rem]">
         {post.content
@@ -40,9 +39,9 @@ const Post: FC<Props> = ({ id }) => {
         <PrimaryLink href={`/posts/edit/${id}`}>Edit</PrimaryLink>
         <BorderLink href="/">Back</BorderLink>
       </div>
-    </section>
+    </div>
   ) : (
-    <Error statusCode={404} />
+    <></>
   )
 }
 

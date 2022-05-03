@@ -1,21 +1,18 @@
 import { NextPage } from 'next'
-import Error from 'next/error'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import Post from '../../features/posts/Post'
-
-const first = (id: string | string[]) => (Array.isArray(id) ? id[0] : id)
+import firstIfArray from '../../lib/firstIfArray'
 
 const PostPage: NextPage = () => {
   const router = useRouter()
-  const { id } = router.query
+  const [id, setId] = useState(router.query.id)
 
-  if (!id) return <Error statusCode={404} />
+  useEffect(() => {
+    setId(router.query.id)
+  }, [router])
 
-  return (
-    <section>
-      <Post id={first(id)} />
-    </section>
-  )
+  return <section>{id && <Post id={firstIfArray(id)} />}</section>
 }
 
 export default PostPage
