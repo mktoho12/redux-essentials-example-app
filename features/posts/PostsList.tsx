@@ -5,6 +5,7 @@ import { RootState } from '../../app/store'
 import { fetchPosts, selectAllPosts } from './postsSlice'
 import PostExcerpt from './PostExcerpt'
 import Spinner from '../../components/Spinner'
+import useIdlingPostSlice from '../../hooks/IdlingPostSlice'
 
 const PostsList: FC = () => {
   const dispatch = useAppDispatch()
@@ -13,6 +14,7 @@ const PostsList: FC = () => {
   const postStatus = useSelector((state: RootState) => state.posts.status)
   const error = useSelector((state: RootState) => state.posts.error)
 
+  useIdlingPostSlice()
   useEffect(() => {
     if (postStatus === 'idle') {
       dispatch(fetchPosts())

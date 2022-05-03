@@ -1,9 +1,11 @@
 import { FC, useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { RootState } from '../../app/store'
 import BorderLink from '../../components/button/BorderLink'
 import PrimaryLink from '../../components/button/PrimaryLink'
 import PostAuthor from './PostAuthor'
-import { selectPostById } from './postsSlice'
+import { fetchPost, idling, selectPostById } from './postsSlice'
 import ReactionButtons from './ReactionButtons'
 import TimeAgo from './TimeAgo'
 
@@ -12,7 +14,20 @@ type Props = {
 }
 
 const Post: FC<Props> = ({ id }) => {
-  const post = useSelector(selectPostById(id))
+  const dispatch = useAppDispatch()
+  const postStatus = useSelector((state: RootState) => state.posts.status)
+  const post = useAppSelector(selectPostById(id))
+
+  useEffect(() => {
+    dispatch(idling())
+  }, [dispatch])
+
+  useEffect(() => {
+    console.log({ postStatus, dispatch, id })
+    if (postStatus === 'idle') {
+      dispatch(fetchPost(id))
+    }
+  }, [postStatus, dispatch, id])
 
   return post ? (
     <div>
