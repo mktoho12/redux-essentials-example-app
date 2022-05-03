@@ -61,6 +61,19 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   return snapshot.docs.map(doc => doc.data())
 })
 
+export const fetchPost = createAsyncThunk(
+  'posts/fetchPost',
+  async (id: string) => {
+    const snapshot = await getDoc(
+      doc(db, 'posts', id).withConverter(postConverter)
+    )
+    if (!snapshot.exists()) {
+      throw `Post ${id} is not found`
+    }
+    return snapshot.data()
+  }
+)
+
 export const addNewPost = createAsyncThunk(
   'posts/addNewPost',
   async (initialPost: NewPost) => {
@@ -106,7 +119,11 @@ export const updatePost = createAsyncThunk(
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    idling: state => {
+      state.status = 'idle'
+    },
+  },
   extraReducers: builder => {
     builder
       .addCase(fetchPosts.pending, state => {
@@ -117,6 +134,17 @@ const postsSlice = createSlice({
         state.posts = action.payload
       })
       .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = 'failed'
+        state.error = action.error.message
+      })
+      .addCase(fetchPost.pending, state => {
+        state.status = 'loading'
+      })
+      .addCase(fetchPost.fulfilled, (state, { payload: post }) => {
+        state.status = 'succeeded'
+        state.posts = state.posts.filter(p => p.id !== post?.id).concat(post)
+      })
+      .addCase(fetchPost.rejected, (state, action) => {
         state.status = 'failed'
         state.error = action.error.message
       })
@@ -140,6 +168,7 @@ const postsSlice = createSlice({
 })
 
 export default postsSlice.reducer
+export const { idling } = postsSlice.actions
 
 export const selectAllPosts = ({ posts: { posts } }: RootState) => posts
 

@@ -2,10 +2,12 @@ import Error from 'next/error'
 import { useRouter } from 'next/router'
 import { FC, ReactNode, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
+import { RootState } from '../../app/store'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import TextArea from '../../components/input/TextArea'
 import TextField from '../../components/input/TextField'
-import { selectPostById, updatePost } from './postsSlice'
+import useIdlingPostSlice from '../../hooks/IdlingPostSlice'
+import { fetchPost, selectPostById, updatePost } from './postsSlice'
 
 type Props = {
   id: string
@@ -18,10 +20,19 @@ const EditPostForm: FC<Props> = ({ id, buttons }) => {
 
   const dispatch = useAppDispatch()
   const post = useAppSelector(selectPostById(id))
+  const postStatus = useAppSelector((state: RootState) => state.posts.status)
 
   const router = useRouter()
 
   const [requestStatus, setRequestStatus] = useState('idle')
+  useIdlingPostSlice()
+
+  useEffect(() => {
+    if (postStatus === 'idle') {
+      dispatch(fetchPost(id))
+    }
+  }, [dispatch, postStatus, id])
+
   const dispatchUpdatePost = () => {
     try {
       setRequestStatus('pending')
