@@ -7,17 +7,13 @@ import firstIfArray from '../../../lib/firstIfArray'
 
 const PostEditPage: NextPage = () => {
   const router = useRouter()
-  const [id, setId] = useState<string | undefined>()
-
-  useEffect(() => {
-    setId(firstIfArray(router.query.id))
-  }, [router])
+  const postId = router.query.id
 
   return (
     <section>
-      {id && (
+      {postId && (
         <EditPostForm
-          id={id}
+          id={firstIfArray(postId)}
           buttons={<BorderLink href="/">Cancel</BorderLink>}
         />
       )}

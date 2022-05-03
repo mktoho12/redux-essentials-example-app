@@ -6,13 +6,9 @@ import firstIfArray from '../../lib/firstIfArray'
 
 const PostPage: NextPage = () => {
   const router = useRouter()
-  const [id, setId] = useState(router.query.id)
+  const postId = router.query.id
 
-  useEffect(() => {
-    setId(router.query.id)
-  }, [router])
-
-  return <section>{id && <Post id={firstIfArray(id)} />}</section>
+  return <section>{postId && <Post id={firstIfArray(postId)} />}</section>
 }
 
 export default PostPage

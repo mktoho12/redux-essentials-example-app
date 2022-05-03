@@ -6,6 +6,7 @@ import { RootState } from '../../app/store'
 import PrimaryButton from '../../components/button/PrimaryButton'
 import TextArea from '../../components/input/TextArea'
 import TextField from '../../components/input/TextField'
+import Spinner from '../../components/Spinner'
 import useIdlingPostSlice from '../../hooks/IdlingPostSlice'
 import { fetchPost, selectPostById, updatePost } from './postsSlice'
 
@@ -52,36 +53,41 @@ const EditPostForm: FC<Props> = ({ id, buttons }) => {
     setContent(post.content)
   }, [post])
 
-  if (!post) return <Error statusCode={404} />
-
   return (
-    <>
+    <div>
       <h2 className="text-2xl my-4">Edit Post</h2>
-      <form>
-        <fieldset className="flex flex-col gap-4">
-          <TextField
-            name="Title"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-          />
 
-          <TextArea
-            name="content"
-            className="h-24"
-            value={content}
-            onChange={e => setContent(e.target.value)}
-          />
-        </fieldset>
+      {postStatus === 'failed' ? (
+        <Error statusCode={404} />
+      ) : postStatus === 'loading' ? (
+        <Spinner size="80" text="loading..." />
+      ) : (
+        <form>
+          <fieldset className="flex flex-col gap-4">
+            <TextField
+              name="Title"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
 
-        <div className="mt-4 flex justify-center gap-4">
-          <PrimaryButton type="button" onClick={dispatchUpdatePost}>
-            Update
-          </PrimaryButton>
+            <TextArea
+              name="content"
+              className="h-24"
+              value={content}
+              onChange={e => setContent(e.target.value)}
+            />
+          </fieldset>
 
-          {buttons}
-        </div>
-      </form>
-    </>
+          <div className="mt-4 flex justify-center gap-4">
+            <PrimaryButton type="button" onClick={dispatchUpdatePost}>
+              Update
+            </PrimaryButton>
+
+            {buttons}
+          </div>
+        </form>
+      )}
+    </div>
   )
 }
 

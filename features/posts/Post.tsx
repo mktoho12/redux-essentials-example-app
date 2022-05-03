@@ -1,9 +1,11 @@
+import Error from 'next/error'
 import { FC, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
 import BorderLink from '../../components/button/BorderLink'
 import PrimaryLink from '../../components/button/PrimaryLink'
+import Spinner from '../../components/Spinner'
 import PostAuthor from './PostAuthor'
 import { fetchPost, idling, selectPostById } from './postsSlice'
 import ReactionButtons from './ReactionButtons'
@@ -23,13 +25,16 @@ const Post: FC<Props> = ({ id }) => {
   }, [dispatch])
 
   useEffect(() => {
-    console.log({ postStatus, dispatch, id })
     if (postStatus === 'idle') {
       dispatch(fetchPost(id))
     }
   }, [postStatus, dispatch, id])
 
-  return post ? (
+  return postStatus === 'loading' ? (
+    <Spinner size="80" text="loading..." />
+  ) : postStatus === 'failed' ? (
+    <Error statusCode={404} />
+  ) : post ? (
     <div>
       <h2 className="text-2xl mt-4">{post.title}</h2>
       <p className="mt-4 min-h-[6rem]">
