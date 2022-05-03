@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSelector, createSlice } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
 import {
   addDoc,
@@ -176,3 +176,8 @@ export const selectPostById =
   (id?: string) =>
   ({ posts: { posts } }: RootState) =>
     posts.find(post => post.id === id)
+
+export const selectPostByUser = createSelector(
+  [selectAllPosts, (state, userId: string) => userId],
+  (posts, userId) => posts.filter(post => post.user === userId)
+)

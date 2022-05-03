@@ -1,11 +1,10 @@
 import Link from 'next/link'
 import { FC, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
 import H2 from '../../components/heading/H2'
 import useIdlingPostSlice from '../../hooks/IdlingPostSlice'
-import { fetchPosts, selectAllPosts } from '../posts/postsSlice'
+import { fetchPosts, selectPostByUser } from '../posts/postsSlice'
 import { selectUserById } from './usersSlice'
 
 type Props = {
@@ -17,7 +16,9 @@ const User: FC<Props> = ({ id }) => {
 
   const dispatch = useAppDispatch()
   const postStatus = useAppSelector((state: RootState) => state.posts.status)
-  const posts = useAppSelector(selectAllPosts)
+  const posts = useAppSelector((state: RootState) =>
+    selectPostByUser(state, id)
+  )
 
   useIdlingPostSlice()
 
